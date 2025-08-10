@@ -12,10 +12,9 @@
 
 import numpy as np
 
-#%%
 # Entrada do grafo orientado:
 V = np.arange(6) # Conjunto de nos (array).
-n = len(V) # Numero de nós no grafo.
+n = len(V) # Numero de nï¿½s no grafo.
 M = np.inf # Valor infinito.
 A = np.array([[M,6,4,M,M,M],
               [M,M,2,2,M,M],
@@ -59,7 +58,7 @@ A = np.array([[M,6,4,M,M,M],
 pred = np.ones((n,n),dtype=np.int16) * -1# Todos os predecessores iniciam com 0 (no inexistente no grafo 
                # original).
 
-# Inicialização da matriz de distâncias:
+# Inicializaï¿½ï¿½o da matriz de distï¿½ncias:
 # dist = np.ones((n,n)) * M # Todas as distancias iniciam com valor infinito.
 dist = A.copy() # Para criar uma copia, c.c. mudancas em dist alteram A tambem.
 for i in range(n):
@@ -67,7 +66,7 @@ for i in range(n):
         if dist[i,j] != M:
             pred[i,j] = i
 np.fill_diagonal(dist,0) # A distancia de um no para ele mesmo e zero, entao a diagonal principal da matriz de distancia e 0. 
-#%%
+
 for k in range(n):
     for i in range(n):
         for j in range(n):
