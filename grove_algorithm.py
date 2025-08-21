@@ -4,42 +4,31 @@ from qiskit_aer import Aer
 from qiskit import transpile
 
 # Create a new circuit with three qubits and three classical bits
-qc = QuantumCircuit(3, 3)
+qc = QuantumCircuit(2, 2)
 
 # --- State Preparation ---
-qc.x(0)  # Porta X no q0
 qc.h(0)
 qc.h(1)
-qc.h(2)
+# com ambos os qubits em superposição, temos |00> + |01> + |10> + |11>
+# --- Oracle (|10> marked em bits isso é 01 pois os qubits são invertidos na medição) ---
+qc.x([1]) # Troco o 0 por 1
 
-# --- Toffoli Gate (CCX decomposta em portas elementares) ---
-qc.h(0)
-qc.cx(1, 0)
-qc.tdg(0)
-qc.cx(2, 0)
-qc.t(0)
-qc.cx(1, 0)
-qc.tdg(0)
-qc.cx(2, 0)
-qc.t(0)
-qc.tdg(1)
-qc.h(0)
-qc.cx(2, 1)
-qc.tdg(1)
-qc.cx(2, 1)
-qc.s(1)
-qc.t(2)
+## porta CZ
+qc.h(1) # coloco em superposição o último qubit
+qc.cx(0, 1) # Inverte o sinal do estado |11> (A ideia é que o cx entre duas portas H é um CZ, e o CZ inverte o sinal do estado |111...1>)
+qc.h(1)
+## fim da porta CZ
+qc.x([1]) # volto o último qubit para |0>
+# inversão de fase para o estado marcado
 
 # --- Grover Operator ---
-qc.h([1, 2])
-qc.x([1, 2])
+qc.h([0, 1])
+qc.x([0, 1])
 qc.h(1)
-qc.cx(2, 1)
+qc.cx(0, 1)
 qc.h(1)
-qc.x(2)
-qc.h(2)
-qc.x(1)
-qc.h(1)
+qc.x([0,1])
+qc.h([0,1])
 
 
 # Visualizar o circuito

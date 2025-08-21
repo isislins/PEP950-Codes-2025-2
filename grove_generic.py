@@ -3,6 +3,7 @@ from qiskit_ibm_runtime import QiskitRuntimeService, Sampler
 from qiskit_aer import Aer
 from qiskit import transpile
 from qiskit.visualization import plot_histogram
+import matplotlib.pyplot as plt
 
 def grover_search(target: str, shots=1024):
     """
@@ -56,11 +57,12 @@ def grover_search(target: str, shots=1024):
 
 
 # Exemplo de uso
-target = "01"   # valor que queremos encontrar
+target = "00"   # valor que queremos encontrar
 qc, counts = grover_search(target)
 
 print("Resultado das medições:", counts)
 print("Esperado:", target)
 
 qc.draw("mpl")  # desenha o circuito
-plot_histogram(counts).show()
+fig = plot_histogram(counts)
+plt.show()
