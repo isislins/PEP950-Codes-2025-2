@@ -4,7 +4,9 @@ from qiskit_aer import Aer
 from qiskit import transpile
 from qiskit.visualization import plot_histogram
 import matplotlib.pyplot as plt
+from qiskit.circuit.library import grover_operator
 
+grover_operator()
 def grover_search(target: str, shots=1024):
     """
     Executa o algoritmo de Grover para buscar um estado alvo específico.
@@ -43,6 +45,7 @@ def grover_search(target: str, shots=1024):
     qc.h(n-1)
     qc.x(range(n))
     qc.h(range(n))
+    
 
     # --- 4. Medição ---
     qc.measure(range(n), range(n))
