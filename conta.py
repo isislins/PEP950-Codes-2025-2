@@ -30,16 +30,49 @@ def diffusion_operator(n):
 # Example: if we have 2 qubits and we want to apply gateX to the first qubit (index 0), then the resulting matrix will: [[0, 1, 0, 0], [1, 0, 0, 0],[0, 0, 1, 0], [0, 0, 0, 1]]
 # If we want to apply gateX to the second qubit (index 1), then the resulting matrix will: [[1, 0, 0, 0], [0, 1, 0, 0],[0, 0, 0, 1], [0, 0, 1, 0]]
 def getSpecificTransformation(gate, qubit_index, n_qubits):
-    mat = np.zeros((2**n_qubits, 2**n_qubits))
+    #if np.iscomplex(gate).any() == True:
+    mat = np.zeros((2*n_qubits, 2*n_qubits), dtype=complex)
+    #else:
+    #    mat = np.zeros((2*n_qubits, 2*n_qubits))
     if qubit_index >= n_qubits:
         raise ValueError("Qubit index out of range")
+    
     for i in range(0, mat.shape[0], 2):
-        if i == 0:
-            result = gate if i == qubit_index else identity
-        else:
-            result = tensor_product(result, gate if i == qubit_index else identity)
+            if i == qubit_index*2:
+                mat[i][i] = gate[0][0]
+                mat[i][i+1] = gate[0][1]
+                mat[i+1][i] = gate[1][0]
+                mat[i+1][i+1] = gate[1][1]
+            else:
+                mat[i][i] = 1
+                mat[i+1][i+1] = 1
+    return mat
 
+# Create a getTransformation function that apply a specific gate to all qubits
+def getTransformation(gate, n_qubits):  
+    result = gate
+    for _ in range(n_qubits - 1):
+        result = tensor_product(result, gate)
+    return result
 
+# grover for 2 qubits
+statevector = np.array([[1], [0], [0], [0]], dtype=complex )  # initial state |00>
+D, W, R = diffusion_operator(np.sqrt(len(statevector)).astype(int))
+print("Diffusion Operator D:\n", D)
+print("W Matrix:\n", W)
+print("R Matrix:\n", R)
+print("Initial Statevector:\n", statevector)
+# Apply Hadamard to all qubits to create superposition
+H_all = getTransformation(gateH, 2)
+statevector = H_all @ statevector
+print("Statevector after Hadamard:\n", statevector)
+# Apply Oracle (for example, marking state |10>, which is index 2)
+oracle = getSpecificTransformation(gateX, 0, 2)  # X gate on qubit 0 to flip |00> to |10>
+print("oracleX:\n", oracle)
+statevector = oracle @ statevector
+print("Statevector after Oracle:\n", statevector)
+
+#print(getSpecificTransformation(gateS,1,2))
 
 #result = tensor_product(A, B)
 #print("Tensor Product of A and B:\n", result)
