@@ -12,7 +12,7 @@ gateZ = np.array([[1, 0], [0, -1]])
 gateH = (1/np.sqrt(2)) * np.array([[1, 1], [1, -1]])
 gateS = np.array([[1, 0], [0, np.exp(1j * np.pi / 2)]])
 gateT = np.array([[1, 0], [0, np.exp(1j * np.pi / 4)]])
-nQubits = 2
+nQubits = 3
 
 # function to create a diffusion operator for Grover's algorithm where D = W*R*W where Wij = 2^(-n/2) * (-1)^(i.j)
 # and (i,j) are the binary representations of the row and column indices. And R is a diagonal matrix with R[0,0] = 1 and R[i,i] = -1 for i > 0.
@@ -31,14 +31,17 @@ def diffusion_operator(n):
 # If we want to apply gateX to the second qubit (index 1), then the resulting matrix will: [[1, 0, 0, 0], [0, 1, 0, 0],[0, 0, 0, 1], [0, 0, 1, 0]]
 def getSpecificTransformation(gate, qubit_index, n_qubits):
     #if np.iscomplex(gate).any() == True:
-    mat = np.zeros((2*n_qubits, 2*n_qubits), dtype=complex)
+    mat = np.zeros((2**n_qubits, 2**n_qubits))#, dtype=complex)
     #else:
     #    mat = np.zeros((2*n_qubits, 2*n_qubits))
-    if qubit_index >= n_qubits:
-        raise ValueError("Qubit index out of range")
-    
+ 
     for i in range(0, mat.shape[0], 2):
-            if i == qubit_index*2:
+            if i == 0 and i in qubit_index:
+                mat[i][i] = gate[0][0]
+                mat[i][i+1] = gate[0][1]
+                mat[i+1][i] = gate[1][0]
+                mat[i+1][i+1] = gate[1][1]
+            elif i//2 in qubit_index:
                 mat[i][i] = gate[0][0]
                 mat[i][i+1] = gate[0][1]
                 mat[i+1][i] = gate[1][0]
@@ -56,23 +59,50 @@ def getTransformation(gate, n_qubits):
     return result
 
 # grover for 2 qubits
-statevector = np.array([[1], [0], [0], [0]], dtype=complex )  # initial state |00>
-D, W, R = diffusion_operator(np.sqrt(len(statevector)).astype(int))
+statevector = np.zeros((2**nQubits,1), dtype=complex )  # initial state |00>
+statevector[0][0] = 1  # set the initial state to |00>
+D, W, R = diffusion_operator(nQubits)
 print("Diffusion Operator D:\n", D)
 print("W Matrix:\n", W)
 print("R Matrix:\n", R)
 print("Initial Statevector:\n", statevector)
 # Apply Hadamard to all qubits to create superposition
-H_all = getTransformation(gateH, 2)
+H_all = getTransformation(gateH, nQubits)
+print(H_all)
 statevector = H_all @ statevector
 print("Statevector after Hadamard:\n", statevector)
-# Apply Oracle (for example, marking state |10>, which is index 2)
-oracle = getSpecificTransformation(gateX, 0, 2)  # X gate on qubit 0 to flip |00> to |10>
-print("oracleX:\n", oracle)
-statevector = oracle @ statevector
+
+# Apply Oracle if needed to change qubits 0 state (for example, marking state |00>, which is index 1)
+#flip0 = getSpecificTransformation(gateX,[0,2], nQubits)  # X gate on qubit 0 and 1 to flip |010> to |111>
+#print("flip0:\n", flip0)
+#statevector = flip0 @ statevector
+
+## Simplified CZ gate application
+statevector = getSpecificTransformation(gateZ,[nQubits-1],nQubits) @ statevector
+print(getSpecificTransformation(gateZ,[nQubits-1],nQubits))
 print("Statevector after Oracle:\n", statevector)
+## End CZ
 
-#print(getSpecificTransformation(gateS,1,2))
+#statevector = getSpecificTransformation(gateH,[nQubits-1],nQubits) @ statevector
+#print("Statevector after H on qubit 1:\n", statevector)
+#statevector = getSpecificTransformation(gateX,[nQubits-1],nQubits) @ statevector
+#print("Statevector after X on qubit 1:\n", statevector)
+#statevector = getSpecificTransformation(gateH,[nQubits-1],nQubits) @ statevector
+#print("Statevector after H on qubit 1:\n", statevector)
+#print("Statevector after Oracle with CZ:\n", statevector)
 
-#result = tensor_product(A, B)
-#print("Tensor Product of A and B:\n", result)
+## Apply X to all qubits if oracle was done with X gates
+#statevector = getTransformation(gateX, nQubits) @ statevector
+#print("Statevector after X on all qubits:\n", statevector)
+
+## Apply grover
+statevector = D @ statevector
+print("Statevector after Diffusion 1 time:\n", statevector)
+
+
+
+
+
+  
+
+
