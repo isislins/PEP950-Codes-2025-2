@@ -93,7 +93,7 @@ H_all = getTransformation(gateH, nQubits)
 statevector = H_all @ statevector
 #print("Statevector after Hadamard:\n", statevector)
 
-grover(statevector,steps) #pi/4 * sqrt(N) iterations should be enough
+grover(statevector,steps) #pi/4 * sqrt(N) iterations should be enough [8 = 12; 12 = 50]
 
 
         
