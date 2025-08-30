@@ -52,20 +52,6 @@ def getTransformation(gate, n_qubits):
         result = tensor_product(result, gate)
     return result
 
-# grover for n qubits
-statevector = np.zeros((2**nQubits,1), dtype=complex )  # initial state |00>
-statevector[0][0] = 1  # set the initial state to |00>
-D, W, R = diffusion_operator(nQubits)
-#print("Diffusion Operator D:\n", D)
-#print("W Matrix:\n", W)
-#print("R Matrix:\n", R)
-#print("Initial Statevector:\n", statevector)
-# Apply Hadamard to all qubits to create superposition
-H_all = getTransformation(gateH, nQubits)
-#print(H_all)
-statevector = H_all @ statevector
-#print("Statevector after Hadamard:\n", statevector)
-
 
 def grover(statevector, steps):
     #for i in np.pi/4 * np.sqrt(2**nQubits):
@@ -90,6 +76,22 @@ def grover(statevector, steps):
             return
     if bestProb < 0.99:
         grover(statevector, steps)
+
+
+
+# grover for n qubits
+statevector = np.zeros((2**nQubits,1), dtype=complex )  # initial state |00>
+statevector[0][0] = 1  # set the initial state to |00>
+D, W, R = diffusion_operator(nQubits)
+#print("Diffusion Operator D:\n", D)
+#print("W Matrix:\n", W)
+#print("R Matrix:\n", R)
+#print("Initial Statevector:\n", statevector)
+# Apply Hadamard to all qubits to create superposition
+H_all = getTransformation(gateH, nQubits)
+#print(H_all)
+statevector = H_all @ statevector
+#print("Statevector after Hadamard:\n", statevector)
 
 grover(statevector,steps) #pi/4 * sqrt(N) iterations should be enough
 
