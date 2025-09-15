@@ -15,8 +15,8 @@ gateH = (1/np.sqrt(2)) * np.array([[1, 1], [1, -1]])
 gateS = np.array([[1, 0], [0, np.exp(1j * np.pi / 2)]])
 gateT = np.array([[1, 0], [0, np.exp(1j * np.pi / 4)]])
 steps = 0
-nQubits = 12
-oracle = [gateX,gateX,gateX,gateX,gateX,gateX,identity,identity,gateX,gateX,gateX,gateX] # oracle to mark |000...0> state
+nQubits = 4
+oracle = [identity,identity,identity,identity] # oracle to mark |000...0> state
 
 
 def getCZ(n):
@@ -67,14 +67,14 @@ def grover(statevector, steps):
     statevector = getSpecificTransformation(oracle) @ statevector
     ## Apply Diffusion operator
     statevector = D @ statevector
-    #print(f"Statevector after Diffusion {steps} time:\n {statevector}")
+    print(f"Statevector after Diffusion {steps} time:\n {statevector}")
     for i in range(statevector.shape[0]):
         p = np.abs(statevector[i][0])**2
-        if p >= 0.99:
+        if p >= 0.95:
             bestProb = p
             print(f"Best state found: |{format(i, f'0{nQubits}b')}> with probability {p} after {steps} steps")
             return
-    if bestProb < 0.99:
+    if bestProb < 0.95:
         grover(statevector, steps)
 
 
@@ -83,7 +83,7 @@ def grover(statevector, steps):
 statevector = np.zeros((2**nQubits,1), dtype=complex )  # initial state |00>
 statevector[0][0] = 1  # set the initial state to |00>
 D, W, R = diffusion_operator(nQubits)
-#print("Diffusion Operator D:\n", D)
+print("Diffusion Operator D:\n", D)
 #print("W Matrix:\n", W)
 #print("R Matrix:\n", R)
 #print("Initial Statevector:\n", statevector)
@@ -91,9 +91,23 @@ D, W, R = diffusion_operator(nQubits)
 H_all = getTransformation(gateH, nQubits)
 #print(H_all)
 statevector = H_all @ statevector
-#print("Statevector after Hadamard:\n", statevector)
+print("Statevector after Hadamard:\n", statevector)
 
-grover(statevector,steps) #pi/4 * sqrt(N) iterations should be enough [8 = 12; 12 = 50]
+statevector = getCZ(nQubits) @ statevector
+print("Statevector after Oracle (CZ):\n", statevector)
+
+statevector = getSpecificTransformation(oracle) @ statevector
+print("Statevector after Oracle (X-CZ-X):\n", statevector)
+
+statevector = D @ statevector
+print("Statevector after Diffusion:\n", statevector)
+
+
+
+
+
+
+#grover(statevector,steps) #pi/4 * sqrt(N) iterations should be enough [8 = 12; 12 = 50]
 
 
         
