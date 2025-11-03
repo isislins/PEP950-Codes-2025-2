@@ -17,6 +17,7 @@ gateT = np.array([[1, 0], [0, np.exp(1j * np.pi / 4)]])
 steps = 0
 nQubits = 4
 oracle = [identity,identity,identity,identity] # oracle to mark |000...0> state
+oracle2 = [gateX, gateX, identity, gateX] # oracle to mark |111...1> state
 
 
 def getCZ(n):
@@ -97,6 +98,15 @@ statevector = getCZ(nQubits) @ statevector
 print("Statevector after Oracle (CZ):\n", statevector)
 
 statevector = getSpecificTransformation(oracle) @ statevector
+print("Statevector after Oracle (X-CZ-X):\n", statevector)
+
+statevector = D @ statevector
+print("Statevector after Diffusion:\n", statevector)
+
+statevector = getCZ(nQubits) @ statevector
+print("Statevector after Oracle (CZ):\n", statevector)
+
+statevector = getSpecificTransformation(oracle2) @ statevector
 print("Statevector after Oracle (X-CZ-X):\n", statevector)
 
 statevector = D @ statevector

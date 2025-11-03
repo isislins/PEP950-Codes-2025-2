@@ -9,7 +9,7 @@ from qiskit.quantum_info import Statevector
 from qiskit_algorithms.optimizers import COBYLA
 import matplotlib.pyplot as plt
 
-# Dados toy: 8 rotas com 3 atributos binários
+# 8 rotas com 3 atributos binários
 route_attributes = {
     0: [0,0,1],
     1: [0,1,1],
@@ -27,7 +27,7 @@ def classical_good(attr):
 good_mask = [int(classical_good(route_attributes[i])) for i in range(8)]
 print("Good mask:", good_mask)
 
-# Função para preparar feature qubit (QRAC-like encoding)
+# Função para preparar feature qubit (QRAC-like encoding) -> Transformar 3 bits clássicos em 1 qubit
 def qrac_3_to_1_angles(bits):
     b0,b1,b2 = bits
     theta = (b0*1.57 + b1*0.78 + b2*0.39)
