@@ -8,9 +8,9 @@ from qiskit_aer import AerSimulator
 # --- 1. PREPARAÇÃO (CLÁSSICA) ---
 
 def encode_array(arr):
-    """Codifica um array de 6 números em uma string binária de 18 bits."""
-    if len(arr) != 6:
-        raise ValueError("O array deve ter exatamente 6 elementos.")
+    # """Codifica um array de 6 números em uma string binária de 18 bits."""
+    # if len(arr) != 6:
+    #     raise ValueError("O array deve ter exatamente 6 elementos.")
     return "".join([f"{x:03b}" for x in arr])
 
 # Transcrição dos dados (Array -> Confiabilidade)
@@ -86,7 +86,7 @@ data_pairs = [  ## os 2 primeiros equipamentos alocados em 1 subsistema com limi
 
 # Cria o "banco de dados" de soluções conhecidas (String Binária -> Confiabilidade)
 known_solutions = {encode_array(arr): val for arr, val in data_pairs}
-n_bits = 18 # 6 números * 3 bits/número
+n_bits = 3*len(data_pairs[0][0]) # 6 números * 3 bits/número
 
 # Solucao inicial (seu ótimo local)
 incumbent_solution = "000010000010011000"

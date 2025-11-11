@@ -4,24 +4,8 @@ import numpy as np
 def gen_bin():
     # Lista de vetores
     vetores = [
-        [2, 0, 1, 0, 4, 0],
-        [0, 2, 0, 1, 4, 0],
-        [1, 1, 0, 2, 1, 0],
-        [0, 2, 2, 1, 1, 1],
-        [0, 2, 0, 2, 1, 1],
-        [1, 1, 0, 1, 3, 1],
-        [0, 2, 1, 1, 3, 0],
-        [0, 2, 0, 2, 0, 3],
-        [0, 2, 1, 2, 0, 1],
-        [0, 2, 2, 1, 2, 0],
-        [0, 2, 0, 2, 2, 0],
-        [1, 1, 0, 1, 4, 0],
-        [0, 2, 0, 2, 1, 2],
-        [0, 2, 1, 2, 1, 0],
-        [0, 2, 0, 3, 0, 0],
-        [0, 2, 0, 2, 2, 1],
-        [0, 2, 0, 2, 3, 0]
-    ]
+        [2, 2, 1, 0, 1, 1, 0, 2, 0]
+        ]
 
     # Função para converter um vetor em binário (3 bits por valor)
     def vetor_para_binario(vetor):
@@ -34,7 +18,7 @@ def gen_bin():
     for v, vb in zip(vetores, vetores_binarios):
         print(f"{v} -> {vb}")
 
-# gen_bin()
+gen_bin()
 
 result_dict = {
     "010000001000100000": [0,978767128,183],
